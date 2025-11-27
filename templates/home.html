@@ -468,14 +468,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const video = document.getElementById('heroVideo');
 
     const switchToFeatures = () => {
+        // Prevent multiple calls
+        if (featuresSection.style.display === 'block') return;
+        
         // Fade out video section
-        videoContainer.style.transition = 'opacity 0.8s ease-in-out, transform 0.8s ease-in-out';
-        videoContainer.style.opacity = '0';
-        videoContainer.style.transform = 'translateY(-20px)';
+        if (videoContainer) {
+            videoContainer.style.transition = 'opacity 0.8s ease-in-out, transform 0.8s ease-in-out';
+            videoContainer.style.opacity = '0';
+            videoContainer.style.transform = 'translateY(-20px)';
+        }
         
         // After fade out, remove it from the DOM and show the other section
         setTimeout(() => {
-            if (videoContainer) {
+            if (videoContainer && videoContainer.parentNode) {
                 videoContainer.remove();
             }
             featuresSection.style.display = 'block';
@@ -492,12 +497,51 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 800); // Corresponds to transition duration
     };
 
-    // Use video 'ended' event
+    // Handle video loading and errors
     if (video) {
+        // If video loads successfully, wait for it to end
         video.addEventListener('ended', switchToFeatures);
+        
+        // Handle video loading errors
+        video.addEventListener('error', (e) => {
+            console.warn('Video failed to load, switching to features section');
+            switchToFeatures();
+        });
+        
+        // Handle case where video can't play (e.g., autoplay blocked)
+        video.addEventListener('canplay', () => {
+            // Video can play, try to play it
+            video.play().catch(err => {
+                console.warn('Autoplay blocked or video play failed:', err);
+                // If autoplay is blocked, switch to features after a short delay
+                setTimeout(switchToFeatures, 2000);
+            });
+        });
+        
+        // Fallback: if video doesn't load within 5 seconds, switch to features
+        const loadTimeout = setTimeout(() => {
+            if (video.readyState < 2) { // HAVE_CURRENT_DATA
+                console.warn('Video taking too long to load, switching to features');
+                switchToFeatures();
+            }
+        }, 5000);
+        
+        // Clear timeout if video loads
+        video.addEventListener('loadeddata', () => {
+            clearTimeout(loadTimeout);
+        });
+        
+        // Additional fallback: if video is stuck, switch after 15 seconds max
+        setTimeout(() => {
+            if (featuresSection.style.display === 'none') {
+                console.warn('Video section timeout, forcing switch to features');
+                switchToFeatures();
+            }
+        }, 15000);
     } else {
-        // Fallback to timer
-        setTimeout(switchToFeatures, 8000);
+        // No video element found, switch immediately
+        console.warn('Video element not found, showing features section');
+        setTimeout(switchToFeatures, 500);
     }
 });
 </script>
