@@ -349,6 +349,35 @@
                 right: 10px;
             }
         }
+
+        /* Hub footer styles (shared button back to main site) */
+        .chrislawrence-footer {
+            background: #000;
+            border-top: 1px solid rgba(255, 255, 255, 0.12);
+            padding: 1.75rem 0;
+            margin-top: 2rem;
+        }
+
+        .chrislawrence-footer .hub-home-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding-left: 1.75rem;
+            padding-right: 1.75rem;
+            border-radius: 999px;
+            text-decoration: none;
+        }
+
+        .chrislawrence-footer .hub-home-btn .hub-logo {
+            height: 40px;
+            width: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .chrislawrence-footer .hub-home-text {
+            white-space: nowrap;
+        }
     </style>
 </head>
 <body class="min-vh-100 d-flex flex-column">
@@ -404,6 +433,22 @@
         </div>
     </footer>
     {% endblock %}
+
+    <!-- Hub Footer: single card-like button linking back to main site -->
+    <footer class="chrislawrence-footer">
+      <div class="container text-center">
+        <a href="https://chrislawrence.ca"
+           class="btn btn-outline-primary btn-lg hub-home-btn"
+           aria-label="Visit main site chrislawrence.ca to view all projects">
+          <img
+            src="{{ url_for('static', filename='favicon.png') }}"
+            alt="SchedShare logo"
+            class="hub-logo d-none d-sm-inline-block"
+          >
+          <span class="hub-home-text">Visit main site: chrislawrence.ca</span>
+        </a>
+      </div>
+    </footer>
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     
