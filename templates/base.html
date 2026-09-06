@@ -246,18 +246,20 @@
             border-bottom-right-radius: 10px;
         }
 
-        /* Enhanced Footer */
-        footer {
+        /* Enhanced Footer. Scoped away from the shared hub footer, which is
+           styled solely by /shared-footer/footer.css; the bare `footer`
+           selector with !important was overriding it. */
+        footer:not(.chrislawrence-footer) {
             background: rgba(10, 12, 16, 0.8) !important;
             backdrop-filter: blur(12px);
             border-top: 1px solid var(--border-primary);
         }
 
-        footer a {
+        footer:not(.chrislawrence-footer) a {
             transition: color var(--transition-fast);
         }
 
-        footer a:hover {
+        footer:not(.chrislawrence-footer) a:hover {
             color: var(--accent-primary) !important;
         }
 
