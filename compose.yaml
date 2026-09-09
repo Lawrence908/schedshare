@@ -20,8 +20,6 @@ services:
     depends_on:
       schedshare-redis:
         condition: service_healthy
-    labels:
-      - "com.centurylinklabs.watchtower.enable=true"
     security_opt:
       - no-new-privileges:true
     healthcheck:
@@ -40,8 +38,8 @@ services:
     volumes:
       - schedshare_redis_data:/data
     command: redis-server --appendonly yes --maxmemory 128mb --maxmemory-policy allkeys-lru
-    labels:
-      - "com.centurylinklabs.watchtower.enable=true"
+    # Not watchtower-enabled: stateful (appendonly persistence on a named
+    # volume). Update deliberately rather than at 4 AM.
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 30s
